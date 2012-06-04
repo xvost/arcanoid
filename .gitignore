@@ -1,0 +1,12 @@
+*.dll
+new_arc.py
+levels.py
+pygame2exe.py
+window.py
+us.stackdump
+class.py
+*.pyd
+dist/
+build/
+.idea/
+*.iml
