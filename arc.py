@@ -88,7 +88,7 @@ def events():
 def continue_game():
     global x, y, angle_flag, score, FPS, reflection, flag
     x, y = 0, 0
-    stic_rect.topleft = (size[0] / 2 - stic_rect.w / 2, size[1] - stic_rect.h - 1)
+    stic_rect.topleft = (size[0] / 2 - stic_rect.w / 2, size[1] - stic_rect.h - 1 - 50)
     screen.blit(stic, stic_rect)
     Ball_rect.midbottom = stic_rect.midtop
     Ball_rect.midbottom = (Ball_rect.midbottom[0], Ball_rect.midbottom[1] + 1)
@@ -104,7 +104,7 @@ def continue_app():
     FPS = 120
     score = 0
     reflection = 0
-    stic_rect.topleft = (size[0] / 2 - stic_rect.w / 2, size[1] - stic_rect.h - 1)
+    stic_rect.topleft = (size[0] / 2 - stic_rect.w / 2, size[1] - stic_rect.h - 1 - 50)
     screen.blit(stic, stic_rect)
     Ball_rect.midbottom = stic_rect.midtop
     Ball_rect.midbottom = (Ball_rect.midbottom[0], Ball_rect.midbottom[1] + 1)
@@ -325,7 +325,7 @@ font48 = pygame.font.Font('Prestige Normal.ttf', 48)
 #Calculate variable
 score = 0
 reflection = 0
-stic_rect.topleft = (size[0] / 2 - stic_rect.w / 2, size[1] - stic_rect.h - 1)
+stic_rect.topleft = (size[0] / 2 - stic_rect.w / 2, size[1] - stic_rect.h - 1 - 50)
 stx, sty = size[0] / 2 - stic_rect.w / 2, 0
 #
 list_lev = load_levels()
