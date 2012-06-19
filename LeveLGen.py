@@ -20,7 +20,7 @@ block_color = 0
 def create_level(list, blocks):
     files = 0
     path = os.getcwd()
-    #    path = path + '/levels/'
+    path = path + '/levels/'
     path = os.path.abspath(path)
     list_files = []
     for i in os.listdir(path):
