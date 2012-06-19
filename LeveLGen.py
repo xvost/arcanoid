@@ -30,7 +30,7 @@ def create_level(list, blocks):
     NUM = 0
     for x, i in enumerate(line_list):
         level.append([])
-        for y, e in enumerate(i):
+        for e in i:
             level[x].append(square_list[NUM][0])
             NUM += 1
     file = open('level%s.arc' % files, 'wb')
@@ -53,17 +53,7 @@ def select(pos, block):
     if block.left < pos[0] < block.right and block.top < pos[1] < block.bottom:
         return True
 
-#def chouse(button,pos,mouse_action):
-#    if button == 1:
-#        one=1
-#    else:
-#        one=0
-#    for i,block in enumerate(square_list):
-#        if select(pos,block[1]):
-#            if 0 <= block[0] < len(list_color)-1:
-#                square_list[i]=(block[0]+one,block[1])
-#            else:
-#                square_list[i]=(0,block[1])
+
 def give_color(pos):
     for i, block in enumerate(square_list):
         if select(pos, block[1]):
@@ -87,7 +77,6 @@ def choice(button, pos):
     global block_color, get
     for block in square_list:
         if select(pos, block[1]):
-            print block[0]
             block_color = set_color(block[0], button)
     get = True
 
@@ -99,12 +88,10 @@ def event():
             quit_app()
         if event.type == pygame.MOUSEBUTTONDOWN:
             push_flag = True
-            if get == False:
-                choice(event.button, event.pos)
+            if not get: choice(event.button, event.pos)
         if event.type == pygame.MOUSEBUTTONUP:
             push_flag = False
-            if get == True:
-                get = False
+            if get: get = False
 
 
 def draw(list):
