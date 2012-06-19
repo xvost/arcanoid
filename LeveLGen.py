@@ -11,7 +11,8 @@ square_list = []
 list_color = [
     color.green,
     color.red,
-    color.magenta
+    color.magenta,
+    color.blue
 ]
 push_flag = False
 get = False
@@ -28,12 +29,15 @@ def create_level(list, blocks):
             files += 1
     level = []
     NUM = 0
+    path = os.getcwd()
+    path = path + '/levels/level%s.arc' % files
+    path = os.path.abspath(path)
     for x, i in enumerate(line_list):
         level.append([])
         for e in i:
             level[x].append(square_list[NUM][0])
             NUM += 1
-    file = open('level%s.arc' % files, 'wb')
+    file = open(path, 'wb')
     pickle.dump(level, file)
     file.close()
 
@@ -64,7 +68,6 @@ def set_color(Bcolor, button):
     global block_color
     if button == 1:
         Bcolor += 1
-        print Bcolor
     else:
         Bcolor -= 1
     if 0 <= Bcolor <= len(list_color) - 1:

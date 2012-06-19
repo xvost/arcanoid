@@ -353,8 +353,8 @@ while 1:
     screen.blit(game_back, game_back_rect)
     events()
     Ball_rect = Ball_rect.move(x, y) #move ball
-    for num, i in enumerate(square_list): #draw blocks
-        pygame.draw.rect(screen, colors[color_list[num]], i)
+    for col, i in enumerate(square_list): #draw blocks
+        pygame.draw.rect(screen, colors[color_list[col]], i)
     if Ball_rect.colliderect(stic_rect): #check collides ball & stick
         if angle_flag:
             angle() #"GO away ball!"
