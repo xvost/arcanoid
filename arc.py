@@ -1,4 +1,4 @@
-import pygame, sys, pickle, os
+import pygame, sys, pickle, os, color
 from math import sqrt
 
 def Win():
@@ -187,7 +187,7 @@ def angle():
 
 
 def CreateLevel(a):
-    global qt, ql, num
+    global qt, ql, num, qw, color_list
     try:
         list_lev[a]
     except:
@@ -197,10 +197,14 @@ def CreateLevel(a):
     blocks = pickle.load(levels)
     levels.close()
     qt1 = qt
+    number_w = len(blocks[0])
+    qw = (size[0] - 40 - (number_w / 2)) / number_w
     for i, j in enumerate(blocks):
         qt1 = qt1 + 2
         for e, r in enumerate(j):
-            if r != 0: square_list.append(pygame.Rect(ql + (qw * e) + e * 1, qt1 + (i * qh), qw, qh))
+            if r != 0:
+                square_list.append(pygame.Rect(ql + (qw * e) + e * 1, qt1 + (i * qh), qw, qh))
+                color_list.append(r - 1)
 
 
 def lose_screen():
@@ -216,7 +220,7 @@ def lose_screen():
         font_get(font20, str(' '.join(['reflections:', str(reflection)])), (size[0] / 2 - 100, size[1] / 2 + 20), red)
         font_get(font20, str(' '.join(['score:', str(score)])), (size[0] / 2 - 100, size[1] / 2 + 40), red)
         if reflection != 0:
-            font_get(font18, str(' '.join(['You`r efficiency:', "%6.2f" % (1.0 * score / reflection)])),
+            font_get(font18, str(' '.join(['You`r efficiency:', "%6.0f" % (1.0 * score / reflection)])),
                 (size[0] / 2 - 100, size[1] / 2 + 60), black)
         font_get(font18, str(' '.join(['Level score:', str(tot)])), (size[0] / 2 - 100, size[1] / 2 + 80), red)
         font_get(font18, str(' '.join(['Total:', str(total_score)])), (size[0] / 2 - 100, size[1] / 2 + 100), red)
@@ -257,11 +261,17 @@ def total():
     else:
         a = 0
     total = score * 10 + lives * 100 + a * 1000
-    total = float("%6.2f" % total)
+    total = float("%6.0f" % total)
     total_score += total
-    return "%6.2f" % total
+    return "%6.0f" % total
 
 #vars
+color_list = []
+
+colors = [color.red,
+          color.magenta,
+          color.blue
+]
 total_score = 0
 num = 0
 lives = 3
@@ -340,12 +350,11 @@ screen.blit(image, Ball_rect)
 Load()
 while 1:
     tmp_x[1] = False #set move mouse = false
-    screen.fill(game_back_color) #fill visible screen to square_color *,*,*
     screen.blit(game_back, game_back_rect)
     events()
     Ball_rect = Ball_rect.move(x, y) #move ball
-    for i in square_list: #draw blocks
-        pygame.draw.rect(screen, square_color, i)
+    for num, i in enumerate(square_list): #draw blocks
+        pygame.draw.rect(screen, colors[color_list[num]], i)
     if Ball_rect.colliderect(stic_rect): #check collides ball & stick
         if angle_flag:
             angle() #"GO away ball!"
@@ -363,6 +372,7 @@ while 1:
                 Ball_rect.bottom = square_list[square].top
             y = -y #"GO away ball!"
             del square_list[square] #remove square
+            del color_list[square]
         elif square_list[square].midtop[1] <= center_ball[1] <= square_list[square].midbottom[1]:
             if square_list[square].centerx < Ball_rect.centerx:
                 Ball_rect.left = square_list[square].right
@@ -370,6 +380,7 @@ while 1:
                 Ball_rect.right = square_list[square].left
             x = -x
             del square_list[square]
+            del color_list[square]
         else:
             if square_list[square].left > Ball_rect.centerx:
                 mx = square_list[square].left - Ball_rect.centerx
@@ -386,12 +397,15 @@ while 1:
                 if mx < my:
                     y = -y
                     del square_list[square]
+                    del color_list[square]
                 elif mx > my:
                     x = -x
                     del square_list[square]
+                    del color_list[square]
                 elif mx == my:
                     x = -x
                     del square_list[square]
+                    del color_list[square]
         if square_list == []: # if list squares's is empty
             lives += 1
             num += 1
