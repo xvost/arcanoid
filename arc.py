@@ -173,7 +173,7 @@ def angle():
         elif center > 0:
             multiplier_x = -1
         elif center == 0:
-            multiplier_x = 0
+            multiplier_x = 1
     else:
         multiplier_x = 1
     if center == 0:
