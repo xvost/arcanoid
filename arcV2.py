@@ -1,5 +1,5 @@
 __author__ = 'Xvost'
-import   pygame
+import pygame
 
 class BALL:
     x = 0
@@ -26,9 +26,9 @@ class window:
     def get_size(self):
         return self.size
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self):
         self.display.blit(self.back_rect, self.display)
-        self.display.flip()
+        pygame.display.flip()
 
 background = pygame.image.load('disp.jpg')
 Main = window((300, 500), background)
