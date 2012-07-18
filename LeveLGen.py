@@ -109,6 +109,8 @@ def draw(list):
 
 pygame.init()
 screen = pygame.display.set_mode(size)
+icon = pygame.image.load('arc.png')
+#pygame.display.set_icon(icon)
 draw(line_list)
 while 1:
     event()

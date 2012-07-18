@@ -177,7 +177,7 @@ def angle():
     else:
         multiplier_x = 1
     if center == 0:
-        x, y = 0, -3
+        x, y = 1 * multiplier_x, -3
     elif 0 < abs(center) < multiplier:
         x, y = 1 * multiplier_x, -3
     elif multiplier < abs(center) < multiplier * 2:
@@ -277,7 +277,7 @@ num = 0
 lives = 3
 flag = True
 but_size = (92, 32)
-FPS = 120
+FPS = 80
 button_c_flag = False
 button_q_flag = False
 x, y = 0, 0
@@ -313,6 +313,7 @@ background = pygame.image.load('disp.jpg')
 loadimg = pygame.image.load('back.png')
 button = pygame.image.load('down.png')
 game_back = pygame.image.load('game_back.png')
+icon = pygame.image.load('arc.png')
 game_back = game_back.convert()
 game_back_rect = game_back.get_rect(topleft=(0, 0))
 loadimg.convert()
@@ -346,6 +347,7 @@ Ball_rect.midbottom = stic_rect.midtop
 Ball_rect.midbottom = (Ball_rect.midbottom[0], Ball_rect.midbottom[1] + 1)
 screen.blit(stic, stic_rect)
 screen.blit(image, Ball_rect)
+#pygame.display.set_icon(icon)
 #run game process
 Load()
 while 1:
@@ -365,7 +367,7 @@ while 1:
     if square != -1: #if ball collides with square 'square'
         score += 1
         center_ball = Ball_rect.center #where square center of ball?
-        if  square_list[square].midleft[0] <= center_ball[0] <= square_list[square].midright[0]:
+        if  square_list[square].left <= center_ball[0] <= square_list[square].right:
             if square_list[square].centery < Ball_rect.centery:
                 Ball_rect.top = square_list[square].bottom
             else:
@@ -373,7 +375,7 @@ while 1:
             y = -y #"GO away ball!"
             del square_list[square] #remove square
             del color_list[square]
-        elif square_list[square].midtop[1] <= center_ball[1] <= square_list[square].midbottom[1]:
+        elif square_list[square].top <= center_ball[1] <= square_list[square].bottom:
             if square_list[square].centerx < Ball_rect.centerx:
                 Ball_rect.left = square_list[square].right
             else:
@@ -390,6 +392,8 @@ while 1:
                 my = square_list[square].top - Ball_rect.centery
             elif square_list[square].bottom < Ball_rect.centery:
                 my = Ball_rect.centery - square_list[square].bottom
+            else:
+                print 1
             mx1 = mx * mx
             my1 = my * my
             mg = sqrt(mx1 + my1)
@@ -406,6 +410,7 @@ while 1:
                     x = -x
                     del square_list[square]
                     del color_list[square]
+                print mg
         if square_list == []: # if list squares's is empty
             lives += 1
             num += 1
@@ -422,6 +427,7 @@ while 1:
             continue_game()
         else:
             square_list = []
+            color_list = []
             num = 0
             lives = 3
             flag = True
@@ -444,10 +450,10 @@ while 1:
     stic_rect.move_ip(stx, sty) #move stick
     screen.blit(stic, stic_rect)
     screen.blit(image, Ball_rect)
-    pygame.draw.line(screen, red, (0, 18), (size[0], 18))
+    pygame.draw.line(screen, red, (0, 19), (size[0], 19), 2)
     font_get(font14, str(' '.join(['score:', str(score)])), (3, 4), red)
     font_get(font14, str(' '.join(['reflections:', str(reflection)])), (75, 4), red)
-    font_get(font14, str(' '.join(['speed: +', "%6.2f" % ((FPS / 120.0) * 100 - 100), '%'])), (195, 4), red)
+    font_get(font14, str(' '.join(['speed: +', "%6.2f" % ((FPS / 80.0) * 100 - 100), '%'])), (195, 4), red)
     font_get(font14, str(' '.join(['lives:', str(lives)])), (315, 3), red)
     font_get(font14, str(' '.join(['level:', str(num + 1)])), (385, 3), red)
     pygame.display.flip()
