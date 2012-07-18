@@ -21,8 +21,8 @@ class window:
         self.background = background
         self.back_rect = background.get_rect(topleft=(0, 0))
         self.disp = pygame.display.set_mode(size)
+        self.background = self.background.convert()
 
-    #        self.background = self.background.convert()
     def get_size(self):
         return self.size
 
