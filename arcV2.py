@@ -1,5 +1,5 @@
 __author__ = 'Xvost'
-import pygame
+import pygame, color, sys
 
 class BALL:
     x = 0
@@ -19,18 +19,29 @@ class window:
     def __init__(self, size, background):
         self.size = size
         self.background = background
-        self.display = pygame.display.set_mode(size)
-        self.background = self.background.convert()
-        self.back_rect = self.background.get_rect(topleft=(0, 0))
+        self.back_rect = background.get_rect(topleft=(0, 0))
+        self.disp = pygame.display.set_mode(size)
 
+    #        self.background = self.background.convert()
     def get_size(self):
         return self.size
 
     def __call__(self):
-        self.display.blit(self.back_rect, self.display)
+        self.disp.fill(color.white)
+        self.disp.blit(self.background, self.back_rect)
         pygame.display.flip()
 
-background = pygame.image.load('disp.jpg')
-Main = window((300, 500), background)
+
+def events():
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.display.quit()
+            sys.exit(0)
+
+pygame.init()
+background = pygame.image.load('game_back.png')
+Main = window((500, 550), background)
+print type(Main.disp)
 while 1:
+    events()
     Main()
