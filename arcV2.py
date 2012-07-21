@@ -13,7 +13,19 @@ class BALL:
     def __init__(self, surface, color, pos, radius):
         self.x = pos[0]
         self.y = pos[1]
-        self.rect = pygame.draw.circle(surface, color, pos, radius)
+        self.pos = pos
+        self.surface = surface
+        self.color = color
+        self.radius = radius
+        self.rect = pygame.draw.circle(self.surface, self.color, self.pos, self.radius)
+
+    def __call__(self):
+        if self.rect.left < block_l or self.rect.right + 1 > Main.size[0]:
+            self.X_vect = -self.X_vect
+        if self.rect.top <= 0 or self.rect.bottom + 1 > Main.size[1]:
+            self.Y_vect = -self.Y_vect
+        self.pos = (self.pos[0] + self.X_vect, self.pos[1] + self.Y_vect)
+        self.rect = pygame.draw.circle(self.surface, self.color, self.pos, self.radius)
 
 
 class window:
@@ -23,9 +35,6 @@ class window:
         self.back_rect = background.get_rect(topleft=(0, 0))
         self.disp = pygame.display.set_mode(size)
         self.background = self.background.convert()
-
-    def get_size(self):
-        return self.size
 
     def __call__(self):
         self.disp.fill(color.white)
@@ -53,6 +62,15 @@ def events():
         if event.type == pygame.QUIT:
             pygame.display.quit()
             sys.exit(0)
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RIGHT:
+                Ball.X_vect += 1
+            if event.key == pygame.K_LEFT:
+                Ball.X_vect -= 1
+            if event.key == pygame.K_UP:
+                Ball.Y_vect -= 1
+            if event.key == pygame.K_DOWN:
+                Ball.Y_vect += 1
 
 
 def load_levels():
@@ -68,7 +86,7 @@ def load_levels():
 
 def CreateLevel(LevelNum):
     global block_t, block_l, num, block_w, color_list
-    size = Main.get_size()
+    size = Main.size
     try:
         LevelFiles[LevelNum]
     except:
@@ -99,16 +117,18 @@ Blocks = []
 pygame.init()
 background = pygame.image.load('game_back.png')
 Main = window((500, 550), background)
-block_l = 20
-block_w = (Main.get_size()[0] - 40) / 10
+block_l = 70
+block_w = (Main.size[0] - 40) / 10
 block_h = 20
 block_t = 20
 LevelFiles = load_levels()
 CreateLevel(NumberOfLevel)
+Ball = BALL(Main.disp, color.red, (Main.size[0] / 2, Main.size[1] / 2 + 50), 8)
 ######################################################
 while 1:
     events()
     Main()
     for now_block in Blocks:
         pygame.draw.rect(Main.disp, colors[Types[now_block.type]], now_block())
+    Ball()
     Main.UpToDate()
