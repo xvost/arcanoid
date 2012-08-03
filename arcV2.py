@@ -1,16 +1,20 @@
 __author__ = 'Xvost'
 import pygame,\
-    color, sys, os, pickle
+    color,\
+    sys,\
+    os,\
+    pickle
 
 class BALL:
     x = 0
     y = 0
     X_vect = 0
     Y_vect = 0
-    radius = 5
+    radius = 2
     color = color.black
 
     def __init__(self, surface, color, pos, radius):
+        #(surface, color, pos, radius)
         self.x = pos[0]
         self.y = pos[1]
         self.pos = pos
@@ -18,7 +22,7 @@ class BALL:
         self.color = color
         self.radius = radius
         self.rect = pygame.draw.circle(self.surface, self.color, self.pos, self.radius)
-
+        Balls.append(self)
     def __call__(self):
         if self.rect.left < block_l or self.rect.right + 1 > Main.size[0]:
             self.X_vect = -self.X_vect
@@ -26,7 +30,6 @@ class BALL:
             self.Y_vect = -self.Y_vect
         self.pos = (self.pos[0] + self.X_vect, self.pos[1] + self.Y_vect)
         self.rect = pygame.draw.circle(self.surface, self.color, self.pos, self.radius)
-
 
 class window:
     def __init__(self, size, background):
@@ -43,19 +46,17 @@ class window:
     def UpToDate(self):
         pygame.display.flip()
 
-
 class block:
     type = None
     pos = ()
 
     def __init__(self, pos, type=None):
+        global Balls
         self.pos = pos
         self.type = type
         self.rect = pygame.Rect(pos[0] - block_w / 2, pos[1] - block_h / 2, block_w, block_h)
-
     def __call__(self):
         return self.rect
-
 
 def events():
     for event in pygame.event.get():
@@ -71,8 +72,14 @@ def events():
                 Ball.Y_vect -= 1
             if event.key == pygame.K_DOWN:
                 Ball.Y_vect += 1
-
-
+    for ball_index,ball in enumerate(Balls):
+        for block_index,block in enumerate(Blocks):
+            if ball.rect.colliderect(block.rect):
+                if Blocks[block_index].rect.left < Balls[ball_index].rect.centerx < Blocks[block_index].rect.right:
+                    Balls[ball_index].Y_vect=-Balls[ball_index].Y_vect
+                if Blocks[block_index].rect.top < Balls[ball_index].rect.centery < Blocks[block_index].rect.bottom:
+                    Balls[ball_index].X_vect=-Balls[ball_index].X_vect
+                del Blocks[block_index]
 def load_levels():
     path = os.getcwd()
     path = path + '/levels/'
@@ -82,7 +89,6 @@ def load_levels():
         if i.split('.')[-1] == 'arc':
             list_files.append((path + '/' + i))
     return list_files
-
 
 def CreateLevel(LevelNum):
     global block_t, block_l, num, block_w, color_list
@@ -107,6 +113,8 @@ def CreateLevel(LevelNum):
                 Blocks[-1].type = Types[r - 1]
 
 ####################################################
+FPS = 40
+fps = pygame.time.Clock()
 colors = [color.red,
           color.magenta,
           color.blue
@@ -114,6 +122,7 @@ colors = [color.red,
 Types = {'Break': 0, 'Block': 1, 'Wood': 2, 2: 'Wood', 1: 'Block', 0: 'Break'}
 NumberOfLevel = 0
 Blocks = []
+Balls=[]
 pygame.init()
 background = pygame.image.load('game_back.png')
 Main = window((500, 550), background)
@@ -123,7 +132,7 @@ block_h = 20
 block_t = 20
 LevelFiles = load_levels()
 CreateLevel(NumberOfLevel)
-Ball = BALL(Main.disp, color.red, (Main.size[0] / 2, Main.size[1] / 2 + 50), 8)
+Ball = BALL(Main.disp, color.red, (Main.size[0] / 2, Main.size[1] / 2 + 50), 4)
 ######################################################
 while 1:
     events()
@@ -132,3 +141,4 @@ while 1:
         pygame.draw.rect(Main.disp, colors[Types[now_block.type]], now_block())
     Ball()
     Main.UpToDate()
+    fps.tick(FPS)
