@@ -4,6 +4,10 @@ import pygame,\
     sys,\
     os,\
     pickle
+from math import sqrt
+from math import atan
+from math import acos
+from math import asin
 
 class BALL:
     x = 0
@@ -75,10 +79,14 @@ def events():
     for ball_index,ball in enumerate(Balls):
         for block_index,block in enumerate(Blocks):
             if ball.rect.colliderect(block.rect):
-                if Blocks[block_index].rect.left < Balls[ball_index].rect.centerx < Blocks[block_index].rect.right:
-                    Balls[ball_index].Y_vect=-Balls[ball_index].Y_vect
-                if Blocks[block_index].rect.top < Balls[ball_index].rect.centery < Blocks[block_index].rect.bottom:
-                    Balls[ball_index].X_vect=-Balls[ball_index].X_vect
+                center_block=block.rect.center
+                center_ball=ball.rect.center
+                x=center_block[0]-center_ball[0]
+                y=center_block[1]-center_ball[1]
+                cos_alpha=(x/gipotenusa*180)/3.14
+                sin_alpha=(y/gipotenusa*180)/3.14
+
+                print cos_alpha,sin_alpha
                 del Blocks[block_index]
 def load_levels():
     path = os.getcwd()
@@ -133,6 +141,17 @@ block_t = 20
 LevelFiles = load_levels()
 CreateLevel(NumberOfLevel)
 Ball = BALL(Main.disp, color.red, (Main.size[0] / 2, Main.size[1] / 2 + 50), 4)
+gipotenusa=sqrt(((block_w/2)^2+(block_h/2)^2))
+abs_cos_1=(block_w/2)/gipotenusa
+abs_cos_2=(block_w/2)/gipotenusa
+abs_cos_3=(-block_w/2)/gipotenusa
+abs_cos_4=(-block_w/2)/gipotenusa
+abs_sin_1=(-block_h/2)/gipotenusa
+abs_sin_2=(block_h/2)/gipotenusa
+abs_sin_3=(block_h/2)/gipotenusa
+abs_sin_4=(-block_h/2)/gipotenusa
+print abs_cos_1, abs_cos_2, abs_cos_3, abs_cos_4
+print abs_sin_1, abs_sin_2, abs_sin_3, abs_sin_4
 ######################################################
 while 1:
     events()
