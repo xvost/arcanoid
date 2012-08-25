@@ -95,25 +95,30 @@ def events():
                     V2 = (center_block[0] - zero[0]) / (center_block[1] - zero[1])
                 except:
                     V2 = (center_block[0] - zero[0]) / (center_block[1] - zero[1] + 1)
-                try:
-                    V3 = (center_block[0] - block.rect.topright[0]) / (center_block[1] - block.rect.topright[1])
-                except:
-                    V3 = (center_block[0] - block.rect.topright[0]) / (center_block[1] - block.rect.topright[1] + 1)
-                try:
-                    V4 = (center_block[0] - block.rect.topleft[0]) / (center_block[1] - block.rect.topleft[1])
-                except:
-                    V4 = (center_block[0] - block.rect.topleft[0]) / (center_block[1] - block.rect.topleft[1] + 1)
+                #                try:
+                #                    V3 = (center_block[0] - block.rect.topright[0]) / (center_block[1] - block.rect.topright[1])
+                #                except:
+                #                    V3 = (center_block[0] - block.rect.topright[0]) / (center_block[1] - block.rect.topright[1] + 1)
+                #                try:
+                #                    V4 = (center_block[0] - block.rect.topleft[0]) / (center_block[1] - block.rect.topleft[1])
+                #                except:
+                #                    V4 = (center_block[0] - block.rect.topleft[0]) / (center_block[1] - block.rect.topleft[1] + 1)
                 a = (atan(V1) - atan(V2))
                 atr = (atan(V3) - atan(V2))
                 atl = (atan(V4) - atan(V2))
-                if 0 <= a <= atr or atl < a < 3.14:
+                if 0 <= a < atr or atl < a <= 3.14159265:
                     Balls[ball_index].X_vect = -Balls[ball_index].X_vect
-                    print 'x'
                 else:
                     Balls[ball_index].Y_vect = -Balls[ball_index].Y_vect
-                    print 'y'
+                if Blocks[block_index].rect.centery < Balls[ball_index].rect.centery:
+                    Balls[ball_index].rect.top = Blocks[block_index].rect.bottom
+                else:
+                    Balls[ball_index].rect.bottom = Blocks[block_index].rect.top
+                if Blocks[block_index].rect.centerx < Balls[ball_index].rect.centerx:
+                    Balls[ball_index].rect.left = Blocks[block_index].rect.right
+                else:
+                    Balls[ball_index].rect.right = Blocks[block_index].rect.left
                 del Blocks[block_index]
-                print 'del'
 
 
 def load_levels():
@@ -171,6 +176,8 @@ LevelFiles = load_levels()
 CreateLevel(NumberOfLevel)
 Ball = BALL(Main.disp, color.red, (Main.size[0] / 2, Main.size[1] / 2 + 50), 4)
 gipotenusa = sqrt(((block_w / 2) ^ 2 + (block_h / 2) ^ 2))
+V3 = (-block_w / 2) / (-block_h / 2)
+V4 = (block_w / 2) / (-block_h / 2)
 ######################################################
 while 1:
     events()
