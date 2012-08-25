@@ -6,8 +6,6 @@ import pygame,\
     pickle
 from math import sqrt
 from math import atan
-from math import acos
-from math import asin
 
 class BALL:
     x = 0
@@ -27,6 +25,7 @@ class BALL:
         self.radius = radius
         self.rect = pygame.draw.circle(self.surface, self.color, self.pos, self.radius)
         Balls.append(self)
+
     def __call__(self):
         if self.rect.left < block_l or self.rect.right + 1 > Main.size[0]:
             self.X_vect = -self.X_vect
@@ -34,6 +33,7 @@ class BALL:
             self.Y_vect = -self.Y_vect
         self.pos = (self.pos[0] + self.X_vect, self.pos[1] + self.Y_vect)
         self.rect = pygame.draw.circle(self.surface, self.color, self.pos, self.radius)
+
 
 class window:
     def __init__(self, size, background):
@@ -50,6 +50,7 @@ class window:
     def UpToDate(self):
         pygame.display.flip()
 
+
 class block:
     type = None
     pos = ()
@@ -59,8 +60,10 @@ class block:
         self.pos = pos
         self.type = type
         self.rect = pygame.Rect(pos[0] - block_w / 2, pos[1] - block_h / 2, block_w, block_h)
+
     def __call__(self):
         return self.rect
+
 
 def events():
     for event in pygame.event.get():
@@ -76,18 +79,43 @@ def events():
                 Ball.Y_vect -= 1
             if event.key == pygame.K_DOWN:
                 Ball.Y_vect += 1
-    for ball_index,ball in enumerate(Balls):
-        for block_index,block in enumerate(Blocks):
+    for ball_index, ball in enumerate(Balls):
+        for block_index, block in enumerate(Blocks):
             if ball.rect.colliderect(block.rect):
-                center_block=block.rect.center
-                center_ball=ball.rect.center
-                x=center_block[0]-center_ball[0]
-                y=center_block[1]-center_ball[1]
-                cos_alpha=(x/gipotenusa*180)/3.14
-                sin_alpha=(y/gipotenusa*180)/3.14
-
-                print cos_alpha,sin_alpha
+                center_block = block.rect.center
+                center_ball = ball.rect.center
+                zero = block.rect.midright
+                topright = block.rect.topright
+                topleft = block.rect.topleft
+                try:
+                    V1 = (center_block[0] - center_ball[0]) / (center_block[1] - center_ball[1])
+                except:
+                    V1 = (center_block[0] - center_ball[0]) / (center_block[1] - center_ball[1] + 1)
+                try:
+                    V2 = (center_block[0] - zero[0]) / (center_block[1] - zero[1])
+                except:
+                    V2 = (center_block[0] - zero[0]) / (center_block[1] - zero[1] + 1)
+                try:
+                    V3 = (center_block[0] - block.rect.topright[0]) / (center_block[1] - block.rect.topright[1])
+                except:
+                    V3 = (center_block[0] - block.rect.topright[0]) / (center_block[1] - block.rect.topright[1] + 1)
+                try:
+                    V4 = (center_block[0] - block.rect.topleft[0]) / (center_block[1] - block.rect.topleft[1])
+                except:
+                    V4 = (center_block[0] - block.rect.topleft[0]) / (center_block[1] - block.rect.topleft[1] + 1)
+                a = (atan(V1) - atan(V2))
+                atr = (atan(V3) - atan(V2))
+                atl = (atan(V4) - atan(V2))
+                if 0 <= a <= atr or atl < a < 3.14:
+                    Balls[ball_index].X_vect = -Balls[ball_index].X_vect
+                    print 'x'
+                else:
+                    Balls[ball_index].Y_vect = -Balls[ball_index].Y_vect
+                    print 'y'
                 del Blocks[block_index]
+                print 'del'
+
+
 def load_levels():
     path = os.getcwd()
     path = path + '/levels/'
@@ -97,6 +125,7 @@ def load_levels():
         if i.split('.')[-1] == 'arc':
             list_files.append((path + '/' + i))
     return list_files
+
 
 def CreateLevel(LevelNum):
     global block_t, block_l, num, block_w, color_list
@@ -130,7 +159,7 @@ colors = [color.red,
 Types = {'Break': 0, 'Block': 1, 'Wood': 2, 2: 'Wood', 1: 'Block', 0: 'Break'}
 NumberOfLevel = 0
 Blocks = []
-Balls=[]
+Balls = []
 pygame.init()
 background = pygame.image.load('game_back.png')
 Main = window((500, 550), background)
@@ -141,17 +170,7 @@ block_t = 20
 LevelFiles = load_levels()
 CreateLevel(NumberOfLevel)
 Ball = BALL(Main.disp, color.red, (Main.size[0] / 2, Main.size[1] / 2 + 50), 4)
-gipotenusa=sqrt(((block_w/2)^2+(block_h/2)^2))
-abs_cos_1=(block_w/2)/gipotenusa
-abs_cos_2=(block_w/2)/gipotenusa
-abs_cos_3=(-block_w/2)/gipotenusa
-abs_cos_4=(-block_w/2)/gipotenusa
-abs_sin_1=(-block_h/2)/gipotenusa
-abs_sin_2=(block_h/2)/gipotenusa
-abs_sin_3=(block_h/2)/gipotenusa
-abs_sin_4=(-block_h/2)/gipotenusa
-print abs_cos_1, abs_cos_2, abs_cos_3, abs_cos_4
-print abs_sin_1, abs_sin_2, abs_sin_3, abs_sin_4
+gipotenusa = sqrt(((block_w / 2) ^ 2 + (block_h / 2) ^ 2))
 ######################################################
 while 1:
     events()
